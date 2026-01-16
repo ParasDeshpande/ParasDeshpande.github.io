@@ -783,87 +783,75 @@
     });
 
     // Form submit -> Google Sheets
-    async function submitForm() {
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const url = document.getElementById('url').value.trim();
-      const message = document.getElementById('message').value.trim();
+   async function submitForm() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
+  const url = document.getElementById("url").value.trim();
+  const message = document.getElementById("message").value.trim();
 
-      const btnText = document.getElementById('btn-text');
-      const submitBtn = document.querySelector('.btn-submit');
+  const btnText = document.getElementById("btn-text");
+  const submitBtn = document.querySelector(".btn-submit");
 
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
-        showMessage("Backend URL missing. Add your Google Apps Script Web App URL.", "error");
-      return; }
-      }
+  // ✅ correct backend validation
+  if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
+    showMessage("Backend URL missing. Add your Google Apps Script Web App URL.", "error");
+    return;
+  }
 
-      if (!name || !email || !mobile) {
-        showMessage('Please fill in all required fields.', 'error');
-        return;
-      }
+  if (!name || !email || !mobile) {
+    showMessage("Please fill in all required fields.", "error");
+    return;
+  }
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(email)) {
-        showMessage('Please enter a valid email address.', 'error');
-        return;
-      }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    showMessage("Please enter a valid email address.", "error");
+    return;
+  }
 
-      submitBtn.disabled = true;
-      btnText.textContent = 'Sending...';
+  submitBtn.disabled = true;
+  btnText.textContent = "Sending...";
 
-      const payload = {
-        name,
-        email,
-        mobile,
-        url: url || "Not provided",
-        message: message || "No message",
-        timestamp: new Date().toISOString()
-      };
+  const payload = {
+    name,
+    email,
+    mobile,
+    url: url || "Not provided",
+    message: message || "No message",
+    timestamp: new Date().toISOString(),
+  };
 
-      try {
-        const res = await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
+  try {
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-        const result = await res.json();
+    // ✅ success (we can’t read JSON in no-cors)
+    showMessage("✓ Thank you! Your message has been sent successfully.", "success");
 
-        if (result.success) {
-          showMessage('✓ Thank you! Your message has been sent successfully.', 'success');
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("mobile").value = "";
+    document.getElementById("url").value = "";
+    document.getElementById("message").value = "";
 
-          document.getElementById('name').value = '';
-          document.getElementById('email').value = '';
-          document.getElementById('mobile').value = '';
-          document.getElementById('url').value = '';
-          document.getElementById('message').value = '';
+  } catch (err) {
+    console.error(err);
+    showMessage("Network error. Please try again later.", "error");
+  } finally {
+    submitBtn.disabled = false;
+    btnText.textContent = "Send Message";
+  }
+}
 
-        } else {
-          showMessage('Error: ' + (result.error || "Unknown error"), 'error');
-        }
-
-      } catch (err) {
-        console.error(err);
-        showMessage('Network error. Please try again later.', 'error');
-      } finally {
-        submitBtn.disabled = false;
-        btnText.textContent = 'Send Message';
-      }
-    }
-
-    function showMessage(text, type) {
-      const formMessage = document.getElementById('form-message');
-      formMessage.textContent = text;
-      formMessage.className = `form-message ${type}`;
-      formMessage.style.display = 'block';
-
-      setTimeout(() => {
-        formMessage.style.display = 'none';
-      }, 5000);
     }
   </script>
 
 </body>
 </html>
+
 
