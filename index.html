@@ -793,9 +793,9 @@
       const btnText = document.getElementById('btn-text');
       const submitBtn = document.querySelector('.btn-submit');
 
-      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("https://script.google.com/macros/s/AKfycbzT1Z0VJ-L5oe1wDwdCluinYTC03_9J-t7v7jZfzlhBblVX9UirXas4PYyIhkSxtFmVIA/exec")) {
+      if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("PASTE_YOUR_WEB_APP_URL_HERE")) {
         showMessage("Backend URL missing. Add your Google Apps Script Web App URL.", "error");
-        return;
+      return; }
       }
 
       if (!name || !email || !mobile) {
@@ -866,3 +866,4 @@
 
 </body>
 </html>
+
