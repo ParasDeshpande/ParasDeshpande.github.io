@@ -333,6 +333,102 @@
         }
 
         /* Blog Section */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .blog-image {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            min-height: 180px;
+        }
+
+        .blog-content-card {
+            padding: 2rem;
+        }
+
+        .blog-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea22, #764ba222);
+            color: var(--primary);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .blog-content-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            line-height: 1.4;
+        }
+
+        .blog-content-card p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .blog-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .blog-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s;
+        }
+
+        .blog-link:hover {
+            gap: 1rem;
+        }
+
+        .blog-placeholder {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 3rem 2rem;
+            box-shadow: 0 5px 20px var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
         .blog-content {
             text-align: center;
             background: var(--card-bg);
@@ -727,10 +823,30 @@
     <!-- Blog Section -->
     <section id="blog">
         <h2 class="section-title">Blog</h2>
-        <div class="blog-content">
-            <i class="fas fa-pencil-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 1rem;"></i>
-            <p>Coming Soon! I'm working on sharing insights about AI, ML, and building scalable systems.</p>
-            <p style="color: var(--text-light); font-size: 1rem;">Stay tuned for articles on LLMs, RAG pipelines, and practical AI implementation.</p>
+        <div class="blog-grid">
+            <div class="blog-card">
+                <div class="blog-image">
+                    <i class="fas fa-robot" style="font-size: 3rem;"></i>
+                </div>
+                <div class="blog-content-card">
+                    <span class="blog-tag">AI & Technology</span>
+                    <h3>AI is the New Revolution: Are You Ready to Evolve?</h3>
+                    <p>Exploring how artificial intelligence is transforming industries and reshaping the future of work. Discover insights on adapting to the AI revolution and preparing for what's next.</p>
+                    <div class="blog-meta">
+                        <span><i class="fas fa-calendar"></i> Medium</span>
+                        <span><i class="fas fa-clock"></i> 5 min read</span>
+                    </div>
+                    <a href="https://medium.com/@paraspdeshpande/ai-is-the-new-revolution-are-you-ready-to-evolve-cfced70f26bd" target="_blank" class="blog-link">
+                        Read Article <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="blog-placeholder">
+                <i class="fas fa-pencil-alt" style="font-size: 2.5rem; color: var(--primary); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">More Coming Soon!</h3>
+                <p style="color: var(--text-light);">I'm working on sharing more insights about LLMs, RAG pipelines, and practical AI implementation.</p>
+            </div>
         </div>
     </section>
 
