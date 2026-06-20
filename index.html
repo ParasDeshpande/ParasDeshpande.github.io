@@ -68,8 +68,23 @@
       font-weight: 700;
       color: var(--text);
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
     }
     .logo span { color: var(--red); }
+    .nav-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+      border: 1.5px solid var(--border);
+      transition: border-color 0.3s;
+    }
+    .nav-avatar:hover {
+      border-color: var(--red);
+    }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
       text-decoration: none;
@@ -129,8 +144,12 @@
     .hero-content {
       position: relative;
       z-index: 1;
-      text-align: center;
       max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+    .hero-text {
+      text-align: center;
     }
     .hero-badge {
       display: inline-flex;
@@ -474,11 +493,58 @@
       font-size: 0.875rem;
       color: var(--text-secondary);
     }
+    .timeline-show-more {
+      margin-left: 3.5rem;
+      margin-top: -0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.2s;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .timeline-show-more:hover {
+      color: var(--red);
+    }
+    .timeline-hidden {
+      display: none;
+      animation: fadeInUp 0.4s ease;
+    }
+    .timeline-hidden.visible {
+      display: block;
+    }
+
+    /* Photo expand overlay */
+    .photo-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      animation: fadeInUp 0.3s ease;
+    }
+    .photo-overlay.visible {
+      display: flex;
+    }
+    .photo-overlay img {
+      max-width: 350px;
+      max-height: 80vh;
+      border-radius: 16px;
+      object-fit: cover;
+      object-position: top;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      border: 2px solid var(--border);
+    }
 
     /* Skills Viz */
     .skills-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 1.5rem;
     }
     .skill-group {
@@ -514,6 +580,49 @@
     .skill-pill:hover {
       border-color: var(--red);
       color: var(--text);
+      cursor: pointer;
+    }
+    .skill-pill.active {
+      border-color: var(--red);
+      color: var(--text);
+      background: rgba(239,68,68,0.1);
+    }
+
+    /* Skill Tooltip */
+    .skill-tooltip {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      max-width: 320px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .skill-tooltip.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .skill-tooltip-desc {
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .skill-tooltip-project {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+      line-height: 1.5;
+    }
+    .skill-tooltip-project::before {
+      content: '↳ Used in: ';
+      color: var(--text-muted);
     }
 
     /* Writing */
@@ -747,12 +856,17 @@
       }
       .nav-toggle { display: block; }
       .hero { padding: 8rem 1.5rem 4rem; }
+      .hero-content { text-align: center; }
+      .hero-text { text-align: center; }
+      .hero-roles { justify-content: center; }
+      .hero-cta { justify-content: center; }
       .hero-name { letter-spacing: -1px; }
       .section { padding: 5rem 1.5rem; }
       .thinking-map { height: 400px; }
       .map-node { font-size: 0.75rem; padding: 0.5rem 1rem; }
       .case-grid { grid-template-columns: 1fr; }
       .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .skills-container { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
       .metrics-grid { grid-template-columns: 1fr; }
@@ -764,7 +878,10 @@
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
-      <div class="logo">paras<span>.</span></div>
+      <div class="logo">
+        <img src="profile.jpg" alt="Paras" class="nav-avatar" onclick="openPhoto()" style="cursor:pointer" />
+        paras<span>.</span>
+      </div>
       <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
         <i class="fas fa-bars"></i>
       </button>
@@ -786,25 +903,27 @@
       <div class="hero-glow"></div>
     </div>
     <div class="hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Currently building at Amber
-      </div>
-      <h1 class="hero-name">
-        <span class="highlight">Paras</span> Deshpande
-      </h1>
-      <p class="hero-subtitle">
-        Building AI systems that solve real business problems.
-      </p>
-      <div class="hero-roles">
-        <span class="hero-role"><span class="arrow">→</span> AI Engineer</span>
-        <span class="hero-role"><span class="arrow">→</span> Search Relevance</span>
-        <span class="hero-role"><span class="arrow">→</span> LLM Evaluation</span>
-        <span class="hero-role"><span class="arrow">→</span> Product Thinker</span>
-      </div>
-      <div class="hero-cta">
-        <a href="#contact" class="btn btn-primary">Let's Connect</a>
-        <a href="resume.pdf" class="btn btn-ghost" download>Resume <i class="fas fa-arrow-down" style="font-size:0.75rem"></i></a>
+      <div class="hero-text">
+        <div class="hero-badge">
+          <span class="dot"></span>
+          Currently building at Amber
+        </div>
+        <h1 class="hero-name">
+          <span class="highlight">Paras</span> Deshpande
+        </h1>
+        <p class="hero-subtitle">
+          Building AI systems that solve real business problems.
+        </p>
+        <div class="hero-roles">
+          <span class="hero-role"><span class="arrow">→</span> AI Engineer</span>
+          <span class="hero-role"><span class="arrow">→</span> Search Relevance</span>
+          <span class="hero-role"><span class="arrow">→</span> LLM Evaluation</span>
+          <span class="hero-role"><span class="arrow">→</span> Product Thinker</span>
+        </div>
+        <div class="hero-cta">
+          <a href="#contact" class="btn btn-primary">Let's Connect</a>
+          <a href="resume.pdf" class="btn btn-ghost" download>Resume <i class="fas fa-arrow-down" style="font-size:0.75rem"></i></a>
+        </div>
       </div>
     </div>
   </section>
@@ -937,30 +1056,41 @@
       <h2 class="section-title">What I've Been Building</h2>
     </div>
     <div class="timeline reveal">
-      <div class="timeline-item">
-        <div class="timeline-date">June 2026</div>
-        <div class="timeline-title">Built Search Evaluation Framework</div>
-        <div class="timeline-desc">Automated relevance scoring for multilingual search queries at scale.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">May 2026</div>
-        <div class="timeline-title">Created Hallucination Detection Process</div>
-        <div class="timeline-desc">Multi-layered verification pipeline for production LLM outputs.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">April 2026</div>
-        <div class="timeline-title">Improved CSAT Analysis Pipeline</div>
-        <div class="timeline-desc">Sentiment and topic clustering across 50k+ conversations.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">March 2026</div>
-        <div class="timeline-title">Shipped RAG Chatbot v2</div>
-        <div class="timeline-desc">92% retrieval accuracy with semantic chunking and hybrid search.</div>
-      </div>
-      <div class="timeline-item">
-        <div class="timeline-date">February 2026</div>
-        <div class="timeline-title">Joined Amber as AI Engineer</div>
-        <div class="timeline-desc">Working on search relevance, LLM evaluation, and conversational AI.</div>
+        <div class="timeline-item">
+          <div class="timeline-date">June 2026</div>
+          <div class="timeline-title">Built Search Evaluation Framework</div>
+          <div class="timeline-desc">Automated relevance scoring for multilingual search queries at scale.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">May 2026</div>
+          <div class="timeline-title">Created Hallucination Detection Process</div>
+          <div class="timeline-desc">Multi-layered verification pipeline for production LLM outputs.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">April 2026</div>
+          <div class="timeline-title">Improved CSAT Analysis Pipeline</div>
+          <div class="timeline-desc">Sentiment and topic clustering across 50k+ conversations.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">March 2026</div>
+          <div class="timeline-title">Shipped RAG Chatbot v2</div>
+          <div class="timeline-desc">92% retrieval accuracy with semantic chunking and hybrid search.</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-date">February 2026</div>
+          <div class="timeline-title">Joined Amber as AI Engineer</div>
+          <div class="timeline-desc">Working on search relevance, LLM evaluation, and conversational AI.</div>
+        </div>
+        <div class="timeline-show-more" id="timeline-toggle" onclick="togglePrevExperience()">...more</div>
+        <div class="timeline-hidden" id="timeline-hidden">
+          <div class="timeline-item">
+            <div class="timeline-date">Jun – Sept 2025</div>
+            <div class="timeline-title">Data Scientist Intern @ Geta.AI Labs</div>
+            <div class="timeline-desc">
+              Engineered multi-LLM RAG pipelines using OpenAI, Claude, Gemini & LLaMA — boosting retrieval quality by 40%. Built production systems with LangChain, ChromaDB, PostgreSQL, Redis & MongoDB. Deployed modular FastAPI + Streamlit architecture with sub-200ms latency. Integrated external APIs for scalable context-aware conversational ecosystems.
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -970,51 +1100,57 @@
     <div class="section-header reveal">
       <span class="section-label">Toolkit</span>
       <h2 class="section-title">What I Work With</h2>
+      <p class="section-subtitle">Click any skill to see where I've used it.</p>
     </div>
     <div class="skills-container reveal">
       <div class="skill-group">
         <div class="skill-group-title"><i class="fas fa-brain"></i> AI & ML</div>
         <div class="skill-list">
-          <span class="skill-pill">LangChain</span>
-          <span class="skill-pill">RAG Pipelines</span>
-          <span class="skill-pill">TensorFlow</span>
-          <span class="skill-pill">PyTorch</span>
-          <span class="skill-pill">Scikit-learn</span>
-          <span class="skill-pill">Embeddings</span>
+          <span class="skill-pill" data-desc="LLM orchestration framework for building AI apps" data-project="RAG Chatbot, Geta.AI RAG Pipelines">LangChain</span>
+          <span class="skill-pill" data-desc="Retrieval-Augmented Generation for grounded AI responses" data-project="RAG Chatbot, Geta.AI Multi-LLM Pipelines">RAG Pipelines</span>
+          <span class="skill-pill" data-desc="Deep learning framework by Google" data-project="Business Analytics Dashboard">TensorFlow</span>
+          <span class="skill-pill" data-desc="Deep learning framework for research & production" data-project="NLP experiments, Model training">PyTorch</span>
+          <span class="skill-pill" data-desc="ML library for classification, regression, clustering" data-project="Business Analytics Dashboard (Churn, Sentiment)">Scikit-learn</span>
+          <span class="skill-pill" data-desc="Vector representations of text for semantic search" data-project="RAG Chatbot, Geta.AI Search Systems">Embeddings</span>
         </div>
       </div>
       <div class="skill-group">
         <div class="skill-group-title"><i class="fas fa-search"></i> Search & NLP</div>
         <div class="skill-list">
-          <span class="skill-pill">OpenSearch</span>
-          <span class="skill-pill">SpaCy</span>
-          <span class="skill-pill">NLTK</span>
-          <span class="skill-pill">FAISS</span>
-          <span class="skill-pill">ChromaDB</span>
-          <span class="skill-pill">Gensim</span>
+          <span class="skill-pill" data-desc="Distributed search engine for relevance scoring" data-project="Amber Search Relevance Validation">OpenSearch</span>
+          <span class="skill-pill" data-desc="Industrial NLP library for entity recognition & parsing" data-project="Text processing pipelines">SpaCy</span>
+          <span class="skill-pill" data-desc="Natural language toolkit for text preprocessing" data-project="Sentiment Analysis, Text Classification">NLTK</span>
+          <span class="skill-pill" data-desc="Facebook's vector similarity search library" data-project="Geta.AI Vector Search Integration">FAISS</span>
+          <span class="skill-pill" data-desc="Open-source embedding database for AI apps" data-project="RAG Chatbot, Geta.AI Backend">ChromaDB</span>
+          <span class="skill-pill" data-desc="Topic modeling & word embeddings library" data-project="Document similarity analysis">Gensim</span>
         </div>
       </div>
       <div class="skill-group">
         <div class="skill-group-title"><i class="fas fa-code"></i> Engineering</div>
         <div class="skill-list">
-          <span class="skill-pill">Python</span>
-          <span class="skill-pill">FastAPI</span>
-          <span class="skill-pill">Docker</span>
-          <span class="skill-pill">PostgreSQL</span>
-          <span class="skill-pill">MongoDB</span>
-          <span class="skill-pill">Linux</span>
+          <span class="skill-pill" data-desc="Primary language for AI/ML and backend systems" data-project="All projects">Python</span>
+          <span class="skill-pill" data-desc="High-performance async Python web framework" data-project="RAG Chatbot, Business Analytics Dashboard, Geta.AI">FastAPI</span>
+          <span class="skill-pill" data-desc="Containerization for reproducible deployments" data-project="Geta.AI production deployment">Docker</span>
+          <span class="skill-pill" data-desc="Relational database for structured data" data-project="Geta.AI Backend, Analytics pipelines">PostgreSQL</span>
+          <span class="skill-pill" data-desc="NoSQL document database for flexible schemas" data-project="Geta.AI conversational systems">MongoDB</span>
+          <span class="skill-pill" data-desc="Server OS for deployment & automation" data-project="Production environments, CI/CD">Linux</span>
         </div>
       </div>
       <div class="skill-group">
         <div class="skill-group-title"><i class="fas fa-chart-bar"></i> Analytics & Product</div>
         <div class="skill-list">
-          <span class="skill-pill">Data Analysis</span>
-          <span class="skill-pill">Power BI</span>
-          <span class="skill-pill">Forecasting</span>
-          <span class="skill-pill">A/B Testing</span>
-          <span class="skill-pill">Product Strategy</span>
+          <span class="skill-pill" data-desc="Extracting insights from complex datasets" data-project="Amber CSAT Analysis, Conversation Analytics">Data Analysis</span>
+          <span class="skill-pill" data-desc="Interactive dashboards for business intelligence" data-project="Sales Insights Dashboard (R²: 0.88)">Power BI</span>
+          <span class="skill-pill" data-desc="Time-series prediction using Prophet & ML" data-project="Business Analytics Dashboard (7.4% MAPE)">Forecasting</span>
+          <span class="skill-pill" data-desc="Experiment design for feature validation" data-project="Amber AI feature releases">A/B Testing</span>
+          <span class="skill-pill" data-desc="Turning business problems into AI product solutions" data-project="Amber product validation, Cross-functional releases">Product Strategy</span>
         </div>
       </div>
+    </div>
+    <!-- Skill tooltip popup -->
+    <div class="skill-tooltip" id="skill-tooltip">
+      <div class="skill-tooltip-desc" id="tooltip-desc"></div>
+      <div class="skill-tooltip-project" id="tooltip-project"></div>
     </div>
   </section>
 
@@ -1081,6 +1217,11 @@
       </div>
     </div>
   </section>
+
+  <!-- Photo Expand Overlay -->
+  <div class="photo-overlay" id="photo-overlay" onclick="closePhoto()">
+    <img src="profile.jpg" alt="Paras Deshpande" />
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -1294,6 +1435,78 @@
         nav.style.borderBottomColor = 'var(--border)';
       }
     });
+
+    // Photo expand
+    function openPhoto() {
+      document.getElementById('photo-overlay').classList.add('visible');
+      document.body.style.overflow = 'hidden';
+    }
+    function closePhoto() {
+      document.getElementById('photo-overlay').classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closePhoto();
+    });
+
+    // Timeline toggle previous experience
+    function togglePrevExperience() {
+      const hidden = document.getElementById('timeline-hidden');
+      const toggle = document.getElementById('timeline-toggle');
+      hidden.classList.toggle('visible');
+      toggle.textContent = hidden.classList.contains('visible') ? '...less' : '...more';
+    }
+
+    // Skill tooltip interaction
+    (function() {
+      const tooltip = document.getElementById('skill-tooltip');
+      const descEl = document.getElementById('tooltip-desc');
+      const projectEl = document.getElementById('tooltip-project');
+      const pills = document.querySelectorAll('.skill-pill');
+      let activePill = null;
+
+      pills.forEach(pill => {
+        pill.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const desc = this.getAttribute('data-desc');
+          const project = this.getAttribute('data-project');
+
+          if (activePill === this) {
+            closeTooltip();
+            return;
+          }
+
+          if (activePill) activePill.classList.remove('active');
+          activePill = this;
+          this.classList.add('active');
+
+          descEl.textContent = desc;
+          projectEl.textContent = project;
+
+          const rect = this.getBoundingClientRect();
+          let top = rect.bottom + 10;
+          let left = rect.left + rect.width / 2 - 160;
+
+          // Keep within viewport
+          if (left < 10) left = 10;
+          if (left + 320 > window.innerWidth) left = window.innerWidth - 330;
+          if (top + 100 > window.innerHeight) top = rect.top - 80;
+
+          tooltip.style.top = top + 'px';
+          tooltip.style.left = left + 'px';
+          tooltip.classList.add('visible');
+        });
+      });
+
+      function closeTooltip() {
+        tooltip.classList.remove('visible');
+        if (activePill) activePill.classList.remove('active');
+        activePill = null;
+      }
+
+      document.addEventListener('click', closeTooltip);
+      document.addEventListener('scroll', closeTooltip);
+    })();
 
     // Contact form submission
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQek2-qcqZg84V-OXvaeThbWmW7UQu0ifNH0hWliVVJSQSog7lR6ShhCJ8Y_SjVFj0GA/exec";
