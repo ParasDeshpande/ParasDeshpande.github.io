@@ -1,31 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Paras Deshpande — AI Engineer & Product Builder</title>
   <meta name="description" content="AI Engineer building practical AI systems that solve real business problems. Search Relevance, LLM Evaluation, Conversational AI." />
+  <meta name="theme-color" content="#f7f6f3" />
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('theme');
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', saved || (dark ? 'dark' : 'light'));
+      } catch (e) {}
+    })();
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #070707;
-      --bg-elevated: #0f0f0f;
-      --bg-card: #141414;
-      --bg-card-hover: #1a1a1a;
-      --border: #1f1f1f;
-      --border-hover: #2a2a2a;
-      --text: #ffffff;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
-      --red: #ef4444;
-      --red-glow: #dc2626;
-      --red-dim: #991b1b;
-      --accent: #f87171;
-      --gradient-1: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
-      --gradient-2: linear-gradient(135deg, #ef4444 0%, #ffffff 100%);
-      --gradient-glow: radial-gradient(ellipse at center, rgba(239,68,68,0.15) 0%, transparent 70%);
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --red: #9f1239;
+      --red-glow: #be123c;
+      --red-dim: #881337;
+      --accent: #be123c;
+      --wa: #25D366;
+      --gradient-1: linear-gradient(135deg, #9f1239, #be123c, #881337);
+      --gradient-2: linear-gradient(135deg, #9f1239 0%, #57534e 100%);
+    }
+    html[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f7f6f3;
+      --bg-elevated: #f1efe9;
+      --bg-card: #ffffff;
+      --bg-card-hover: #faf9f6;
+      --border: #e4e0d8;
+      --border-hover: #cfc8bb;
+      --text: #1c1917;
+      --text-secondary: #57534e;
+      --text-muted: #78716c;
+      --nav-bg: rgba(247, 246, 243, 0.78);
+      --shadow: 0 10px 40px rgba(28, 25, 23, 0.06);
+      --particle: 159, 18, 57;
+      --glow: rgba(159, 18, 57, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #0c0b0a;
+      --bg-elevated: #141210;
+      --bg-card: #181614;
+      --bg-card-hover: #221e1a;
+      --border: #2c2722;
+      --border-hover: #433c34;
+      --text: #f5f1ea;
+      --text-secondary: #b8b0a5;
+      --text-muted: #8a8278;
+      --nav-bg: rgba(12, 11, 10, 0.72);
+      --shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+      --particle: 232, 121, 144;
+      --glow: rgba(190, 18, 60, 0.18);
     }
     html { scroll-behavior: smooth; }
     body {
@@ -35,7 +69,19 @@
       line-height: 1.6;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      transition: background 0.45s var(--ease), color 0.45s var(--ease);
     }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.04;
+      mix-blend-mode: multiply;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+    html[data-theme="dark"] body::before { mix-blend-mode: overlay; opacity: 0.07; }
 
     /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
@@ -48,12 +94,13 @@
       position: fixed;
       top: 0;
       width: 100%;
-      background: rgba(7,7,7,0.8);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: var(--nav-bg);
+      backdrop-filter: blur(22px) saturate(1.2);
+      -webkit-backdrop-filter: blur(22px) saturate(1.2);
       border-bottom: 1px solid var(--border);
       z-index: 1000;
-      padding: 1rem 0;
+      padding: 0.85rem 0;
+      transition: background 0.45s var(--ease), border-color 0.45s var(--ease);
     }
     .nav-container {
       max-width: 1200px;
@@ -107,6 +154,33 @@
     }
     .nav-links a:hover::after { width: 100%; }
 
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: transform 0.35s var(--ease), border-color 0.3s, box-shadow 0.35s var(--ease);
+      box-shadow: var(--shadow);
+    }
+    .theme-toggle:hover {
+      border-color: var(--red);
+      transform: rotate(-12deg) scale(1.06);
+    }
+    .theme-toggle svg { width: 18px; height: 18px; }
+    .theme-toggle .icon-moon { display: none; }
+    html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+    html[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+
     /* Mobile nav toggle */
     .nav-toggle { display: none; background: none; border: none; color: var(--text); font-size: 1.5rem; cursor: pointer; }
 
@@ -138,7 +212,7 @@
       transform: translate(-50%, -50%);
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(239,68,68,0.08) 0%, transparent 70%);
+      background: radial-gradient(circle, var(--glow) 0%, transparent 70%);
       pointer-events: none;
     }
     .hero-content {
@@ -219,12 +293,12 @@
       animation: fadeInUp 0.8s ease 0.4s both;
     }
     .btn {
-      padding: 0.75rem 1.75rem;
-      border-radius: 8px;
+      padding: 0.8rem 1.85rem;
+      border-radius: 999px;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       font-size: 0.9rem;
-      transition: all 0.3s;
+      transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease), background 0.3s, border-color 0.3s, color 0.3s;
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
@@ -234,12 +308,12 @@
       background: var(--red);
       color: white;
       border: none;
-      box-shadow: 0 0 20px rgba(239,68,68,0.3);
+      box-shadow: 0 12px 28px rgba(159, 18, 57, 0.28);
     }
     .btn-primary:hover {
       background: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(239,68,68,0.5);
+      transform: translateY(-3px);
+      box-shadow: 0 18px 36px rgba(159, 18, 57, 0.36);
     }
     .btn-ghost {
       background: transparent;
@@ -249,7 +323,15 @@
     .btn-ghost:hover {
       border-color: var(--red);
       color: var(--text);
-      background: rgba(239,68,68,0.05);
+      background: rgba(159, 18, 57, 0.05);
+    }
+    .hero-role {
+      transition: transform 0.35s var(--ease), border-color 0.3s, color 0.3s;
+    }
+    .hero-role:hover {
+      transform: translateY(-3px);
+      border-color: var(--red);
+      color: var(--text);
     }
 
     /* Sections */
@@ -311,7 +393,7 @@
       color: var(--text);
       background: var(--bg-card-hover);
       transform: scale(1.08);
-      box-shadow: 0 0 25px rgba(239,68,68,0.15);
+      box-shadow: 0 8px 24px rgba(159,18,57,0.12);
     }
     .map-node.center-node {
       background: var(--red);
@@ -344,6 +426,7 @@
       transition: all 0.3s;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 16px rgba(28,25,23,0.04);
     }
     .metric-card::before {
       content: '';
@@ -389,6 +472,7 @@
       transition: all 0.3s;
       position: relative;
       overflow: hidden;
+      box-shadow: 0 4px 16px rgba(28,25,23,0.04);
     }
     .case-card:hover {
       border-color: var(--border-hover);
@@ -475,7 +559,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--red);
-      box-shadow: 0 0 10px rgba(239,68,68,0.4);
+      box-shadow: 0 0 0 4px rgba(159,18,57,0.12);
     }
     .timeline-date {
       font-family: 'JetBrains Mono', monospace;
@@ -585,7 +669,7 @@
     .skill-pill.active {
       border-color: var(--red);
       color: var(--text);
-      background: rgba(239,68,68,0.1);
+      background: rgba(159, 18, 57,0.1);
     }
 
     /* Skill Tooltip */
@@ -601,7 +685,7 @@
       opacity: 0;
       transform: translateY(8px);
       transition: opacity 0.2s, transform 0.2s;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 12px 32px rgba(28,25,23,0.12);
     }
     .skill-tooltip.visible {
       opacity: 1;
@@ -634,16 +718,39 @@
     .writing-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       padding: 2rem;
-      transition: all 0.3s;
+      transition: transform 0.45s var(--ease), border-color 0.3s, box-shadow 0.45s var(--ease);
       text-decoration: none;
       color: inherit;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .writing-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+      transform: translateX(-120%);
+      transition: transform 0.7s var(--ease);
+      pointer-events: none;
     }
     .writing-card:hover {
       border-color: var(--border-hover);
-      transform: translateY(-4px);
+      transform: translateY(-8px);
+      box-shadow: 0 24px 50px rgba(159, 18, 57, 0.1);
+    }
+    .writing-card:hover::after { transform: translateX(120%); }
+    .writing-card .card-arrow {
+      margin-top: auto;
+      padding-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--red);
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     .writing-card-tag {
       font-family: 'JetBrains Mono', monospace;
@@ -684,7 +791,7 @@
       transform: translateX(-50%);
       width: 400px;
       height: 400px;
-      background: radial-gradient(circle, rgba(239,68,68,0.06) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(159, 18, 57,0.06) 0%, transparent 70%);
       pointer-events: none;
     }
     .contact-title {
@@ -720,7 +827,7 @@
     .contact-link:hover {
       border-color: var(--red);
       color: var(--text);
-      background: rgba(239,68,68,0.05);
+      background: rgba(159, 18, 57,0.05);
     }
     /* Contact Form */
     .contact-form {
@@ -756,7 +863,7 @@
     .form-group input:focus,
     .form-group textarea:focus {
       border-color: var(--red);
-      box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+      box-shadow: 0 0 0 3px rgba(159, 18, 57,0.1);
     }
     .form-group input::placeholder,
     .form-group textarea::placeholder {
@@ -777,18 +884,61 @@
       font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.3s;
-      box-shadow: 0 0 20px rgba(239,68,68,0.3);
+      box-shadow: 0 0 20px rgba(159, 18, 57,0.3);
       margin-top: 0.5rem;
     }
     .btn-submit:hover {
       background: var(--accent);
       transform: translateY(-2px);
-      box-shadow: 0 0 30px rgba(239,68,68,0.5);
+      box-shadow: 0 0 30px rgba(159, 18, 57,0.5);
     }
     .btn-submit:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
+    }
+    .whatsapp-fab {
+      position: fixed;
+      right: 1.4rem;
+      bottom: 1.4rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #25D366;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      box-shadow: 0 10px 28px rgba(37, 211, 102, 0.4);
+      z-index: 1100;
+      transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .whatsapp-fab svg {
+      width: 32px;
+      height: 32px;
+      display: block;
+      fill: #fff;
+    }
+    .whatsapp-fab:hover {
+      transform: translateY(-4px) scale(1.05);
+      color: #fff;
+      box-shadow: 0 16px 36px rgba(37, 211, 102, 0.5);
+    }
+    .wa-inline {
+      width: 22px;
+      height: 22px;
+      display: block;
+      flex-shrink: 0;
+    }
+    .contact-link.whatsapp {
+      border-color: rgba(37, 211, 102, 0.45);
+      color: var(--text);
+    }
+    .contact-link.whatsapp:hover {
+      border-color: #25D366;
+      color: var(--text);
+      background: rgba(37, 211, 102, 0.1);
     }
     .form-status {
       margin-top: 1rem;
@@ -800,14 +950,21 @@
     }
     .form-status.success {
       display: block;
-      background: rgba(34,197,94,0.1);
-      border: 1px solid rgba(34,197,94,0.3);
-      color: #4ade80;
+      background: rgba(22,163,74,0.08);
+      border: 1px solid rgba(22,163,74,0.28);
+      color: #15803d;
+    }
+    html[data-theme="dark"] .form-status.success {
+      color: #86efac;
+      background: rgba(22,163,74,0.12);
+    }
+    html[data-theme="dark"] .writing-card::after {
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%);
     }
     .form-status.error {
       display: block;
-      background: rgba(239,68,68,0.1);
-      border: 1px solid rgba(239,68,68,0.3);
+      background: rgba(159, 18, 57,0.1);
+      border: 1px solid rgba(159, 18, 57,0.3);
       color: var(--accent);
     }
 
@@ -845,16 +1002,19 @@
       .nav-links.active {
         display: flex;
         flex-direction: column;
-        position: absolute;
-        top: 100%;
+        position: fixed;
+        top: 68px;
         left: 0;
         right: 0;
         background: var(--bg);
         border-bottom: 1px solid var(--border);
         padding: 1.5rem 2rem;
         gap: 1.25rem;
+        z-index: 999;
       }
       .nav-toggle { display: block; }
+      .nav-actions { gap: 0.6rem; }
+      .nav-links.active { z-index: 20; }
       .hero { padding: 8rem 1.5rem 4rem; }
       .hero-content { text-align: center; }
       .hero-text { text-align: center; }
@@ -873,6 +1033,7 @@
       .thinking-map { height: 350px; }
     }
   </style>
+  <script src="env.js"></script>
 </head>
 <body>
   <!-- Navigation -->
@@ -882,17 +1043,29 @@
         <img src="profile.jpg" alt="Paras" class="nav-avatar" onclick="openPhoto()" style="cursor:pointer" />
         paras<span>.</span>
       </div>
-      <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
-      <ul class="nav-links" id="navLinks">
-        <li><a href="#thinking">Thinking</a></li>
-        <li><a href="#impact">Impact</a></li>
-        <li><a href="#work">Work</a></li>
-        <li><a href="#timeline">Timeline</a></li>
-        <li><a href="#writing">Writing</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
+      <div class="nav-actions">
+        <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li><a href="#thinking">Thinking</a></li>
+          <li><a href="#impact">Impact</a></li>
+          <li><a href="#work">Work</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+          <li><a href="#projects">Projects</a></li>
+          <li><a href="#writing">Writing</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle dark and light mode">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+            <path d="M21 14.5A8.5 8.5 0 1 1 9.5 3 7 7 0 0 0 21 14.5z"/>
+          </svg>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -906,7 +1079,7 @@
       <div class="hero-text">
         <div class="hero-badge">
           <span class="dot"></span>
-          Currently building at Amber
+          Currently building at CMS
         </div>
         <h1 class="hero-name">
           <span class="highlight">Paras</span> Deshpande
@@ -922,7 +1095,7 @@
         </div>
         <div class="hero-cta">
           <a href="#contact" class="btn btn-primary">Let's Connect</a>
-          <a href="resume.pdf" class="btn btn-ghost" download>Resume <i class="fas fa-arrow-down" style="font-size:0.75rem"></i></a>
+          <a href="Paras_Deshpande_Resume.pdf" class="btn btn-ghost" download>Resume <i class="fas fa-arrow-down" style="font-size:0.75rem"></i></a>
         </div>
       </div>
     </div>
@@ -1057,19 +1230,24 @@
     </div>
     <div class="timeline reveal">
         <div class="timeline-item">
+          <div class="timeline-date">Aug 2026 – Present</div>
+          <div class="timeline-title">Product Development Engineer @ CMS, Pune</div>
+          <div class="timeline-desc">Owned end-to-end delivery of an SOP management platform — from stakeholder interviews and process discovery through product design, development, testing and client delivery. Mapped existing SOP workflows into product requirements, user flows and system specs. Built SOP creation, multi-stage approval (up to three levels), submission, tracking, reporting and audit management with NextAuth.js role-based access. Stack: Next.js 14, TypeScript, Tailwind CSS, Prisma, PostgreSQL, Node.js, Docker and React Native/Expo.</div>
+        </div>
+        <div class="timeline-item">
           <div class="timeline-date">June 2026</div>
           <div class="timeline-title">Built Search Evaluation Framework</div>
-          <div class="timeline-desc">Automated relevance scoring for multilingual search queries at scale.</div>
+          <div class="timeline-desc">Automated relevance scoring for multilingual search queries at scale. Analyzed 6,000+ Mandarin search queries to understand search-bar usage and proposed OpenSearch and AI re-ranking improvements.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">May 2026</div>
           <div class="timeline-title">Created Hallucination Detection Process</div>
-          <div class="timeline-desc">Multi-layered verification pipeline for production LLM outputs.</div>
+          <div class="timeline-desc">Multi-layered verification pipeline for production LLM outputs. Designed LangSmith evaluation frameworks with tracing, golden datasets, failure-mode datasets, journey taxonomy and automated quality metrics.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">April 2026</div>
           <div class="timeline-title">Improved CSAT Analysis Pipeline</div>
-          <div class="timeline-desc">Sentiment and topic clustering across 50k+ conversations.</div>
+          <div class="timeline-desc">Sentiment and topic clustering across 50k+ conversations. Prioritized and shipped chatbot tonality, response-length, knowledge-base and message-template improvements; thumbs-up/down CSAT rose from 30% to 60–65% over 4 months against an 80% CSAT OKR.</div>
         </div>
         <div class="timeline-item">
           <div class="timeline-date">March 2026</div>
@@ -1079,16 +1257,36 @@
         <div class="timeline-item">
           <div class="timeline-date">February 2026</div>
           <div class="timeline-title">Joined Amber as AI Engineer</div>
-          <div class="timeline-desc">Working on search relevance, LLM evaluation, and conversational AI.</div>
+          <div class="timeline-desc">Working on search relevance, LLM evaluation, and conversational AI. Led quality evaluation of Amber Copilot, evaluated 1,400+ conversations, and shipped an AI-powered Business Development Intelligence Platform integrating CRM data with LLMs.</div>
         </div>
         <div class="timeline-show-more" id="timeline-toggle" onclick="togglePrevExperience()">...more</div>
         <div class="timeline-hidden" id="timeline-hidden">
           <div class="timeline-item">
+            <div class="timeline-date">Feb – Aug 2026 · Amber</div>
+            <div class="timeline-title">AI Product Development & LLMOps at Amber</div>
+            <div class="timeline-desc">Designed and shipped five BD intelligence modules: Reporting Dashboard, AI Prospecting, Data Enrichment, AI Email Drafting and Outreach Sequencing. Built amber-eval-generator with a 26-field evaluation schema and 14-node conversation classification pipeline. Implemented guardrails, prompt versioning, 50/50 A/B tests on chatbot routing, Redshift SQL for WhatsApp conversation reconstruction, and a Book Form Automation PoC that cut 4–8 minutes of manual effort per interaction. Authored specs for Social Listening, SOP Portal, WhatsApp Sales Agent, API Usage Tracking and AI Gateway enhancements.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Sep 2025 – Feb 2026</div>
+            <div class="timeline-title">Digital Operations Consultant (Freelance) · Bakery Manufacturer, Pune</div>
+            <div class="timeline-desc">Digitized a 100+ SKU product catalog for a bakery manufacturer supplying retailers across Pune. Built a Google Sheets workflow for production and sales tracking, standardized customer order messaging, and introduced AI tools for analysis and content creation while supporting packaging, marketing and pricing decisions.</div>
+          </div>
+          <div class="timeline-item">
             <div class="timeline-date">Jun – Sept 2025</div>
             <div class="timeline-title">Data Scientist Intern @ Geta.AI Labs</div>
             <div class="timeline-desc">
-              Engineered multi-LLM RAG pipelines using OpenAI, Claude, Gemini & LLaMA — boosting retrieval quality by 40%. Built production systems with LangChain, ChromaDB, PostgreSQL, Redis & MongoDB. Deployed modular FastAPI + Streamlit architecture with sub-200ms latency. Integrated external APIs for scalable context-aware conversational ecosystems.
+              Engineered multi-LLM RAG pipelines using OpenAI, Claude, Gemini & LLaMA — boosting retrieval quality by 40%. Built production systems with LangChain, ChromaDB, PostgreSQL, Redis & MongoDB. Deployed modular FastAPI + Streamlit architecture with sub-200ms latency. Integrated external APIs for scalable context-aware conversational ecosystems. Built hybrid retrieval combining PostgreSQL (structured university data) with ChromaDB (PDF documents); worked with FAISS and evaluated Pinecone. Optimized cost and latency by reducing LLM context through semantic chunking and indexing.
             </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">2025</div>
+            <div class="timeline-title">B.E. Artificial Intelligence & Machine Learning</div>
+            <div class="timeline-desc">Savitribai Phule Pune University · CGPA 8.0. Publication: International Journal of Data Science and Analytics (2025) — Automated Result Analysis.</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-date">Projects</div>
+            <div class="timeline-title">PCL, RAG Assistant, Analytics Platform, Sales Insights Dashboard</div>
+            <div class="timeline-desc">PCL — project coordination platform (Next.js 14, TypeScript, Tailwind, FastAPI, SQLAlchemy, SQLite, Recharts). Enterprise RAG Knowledge Assistant with PDF ingestion and grounded answers. AI Business Analytics Platform for churn, sentiment and forecasting. Power BI Sales Insights Dashboard with forecasting (R² 0.88).</div>
           </div>
         </div>
       </div>
@@ -1106,6 +1304,7 @@
       <div class="skill-group">
         <div class="skill-group-title"><i class="fas fa-brain"></i> AI & ML</div>
         <div class="skill-list">
+          <span class="skill-pill" data-desc="LLM observability, tracing and evaluation" data-project="Amber Copilot evaluation, amber-eval-generator">LangSmith</span>
           <span class="skill-pill" data-desc="LLM orchestration framework for building AI apps" data-project="RAG Chatbot, Geta.AI RAG Pipelines">LangChain</span>
           <span class="skill-pill" data-desc="Retrieval-Augmented Generation for grounded AI responses" data-project="RAG Chatbot, Geta.AI Multi-LLM Pipelines">RAG Pipelines</span>
           <span class="skill-pill" data-desc="Deep learning framework by Google" data-project="Business Analytics Dashboard">TensorFlow</span>
@@ -1129,6 +1328,8 @@
         <div class="skill-group-title"><i class="fas fa-code"></i> Engineering</div>
         <div class="skill-list">
           <span class="skill-pill" data-desc="Primary language for AI/ML and backend systems" data-project="All projects">Python</span>
+          <span class="skill-pill" data-desc="React framework for production web apps" data-project="CMS SOP Platform, PCL">Next.js</span>
+          <span class="skill-pill" data-desc="Typed JavaScript for product and full-stack work" data-project="CMS SOP Platform, PCL">TypeScript</span>
           <span class="skill-pill" data-desc="High-performance async Python web framework" data-project="RAG Chatbot, Business Analytics Dashboard, Geta.AI">FastAPI</span>
           <span class="skill-pill" data-desc="Containerization for reproducible deployments" data-project="Geta.AI production deployment">Docker</span>
           <span class="skill-pill" data-desc="Relational database for structured data" data-project="Geta.AI Backend, Analytics pipelines">PostgreSQL</span>
@@ -1154,6 +1355,45 @@
     </div>
   </section>
 
+  <!-- Projects -->
+  <section class="section" id="projects">
+    <div class="section-header reveal">
+      <span class="section-label">Selected Work</span>
+      <h2 class="section-title">Projects</h2>
+      <p class="section-subtitle">Products and systems I have designed, built, and shipped — from coordination workflows to grounded AI.</p>
+    </div>
+    <div class="writing-grid reveal">
+      <article class="writing-card">
+        <div class="writing-card-tag">Product · Full-Stack</div>
+        <h3>PCL — Project Coordination Log</h3>
+        <p>A project coordination platform that centralizes tracking, communication, and operational visibility with dashboards and structured workflows. Architecture is PostgreSQL-ready for production scale.</p>
+        <div class="writing-card-meta">Next.js 14 · TypeScript · FastAPI · SQLAlchemy · Recharts</div>
+        <div class="card-arrow">Built end-to-end →</div>
+      </article>
+      <article class="writing-card">
+        <div class="writing-card-tag">GenAI · RAG</div>
+        <h3>Enterprise RAG Knowledge Assistant</h3>
+        <p>Semantic retrieval system with PDF ingestion, embeddings, and grounded answers — designed to reduce hallucinations and keep responses tied to source documents.</p>
+        <div class="writing-card-meta">Embeddings · Vector search · Grounded generation</div>
+        <div class="card-arrow">Personal project →</div>
+      </article>
+      <article class="writing-card">
+        <div class="writing-card-tag">Analytics · ML</div>
+        <h3>AI Business Analytics Platform</h3>
+        <p>Churn prediction, sentiment analysis, and sales forecasting models built to turn operational data into decisions — demonstrating core ML fundamentals in a product-shaped dashboard.</p>
+        <div class="writing-card-meta">Python · scikit-learn · Forecasting</div>
+        <div class="card-arrow">Personal project →</div>
+      </article>
+      <article class="writing-card">
+        <div class="writing-card-tag">Business Intelligence</div>
+        <h3>Sales Insights Dashboard</h3>
+        <p>Interactive Power BI dashboard for sales leaders: actual vs target, underperforming reps, and built-in forecasting (R² 0.88) with slicers, dynamic filters, and conditional KPIs.</p>
+        <div class="writing-card-meta">Power BI · DAX · Power Query</div>
+        <div class="card-arrow">Analytics storytelling →</div>
+      </article>
+    </div>
+  </section>
+
   <!-- Writing -->
   <section class="section" id="writing">
     <div class="section-header reveal">
@@ -1166,6 +1406,7 @@
         <h3>AI is the New Revolution: Are You Ready to Evolve?</h3>
         <p>Exploring how AI is transforming industries and reshaping the future of work for engineers and builders.</p>
         <div class="writing-card-meta">5 min read · Medium</div>
+        <div class="card-arrow">Read on Medium →</div>
       </a>
       <div class="writing-card" style="border-style: dashed; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
         <i class="fas fa-pen" style="color: var(--text-muted); font-size: 1.5rem; margin-bottom: 1rem;"></i>
@@ -1182,7 +1423,7 @@
       <h2 class="contact-title">Let's build something useful.</h2>
       <p class="contact-subtitle">Open to AI engineering roles, collaborations, and interesting problems.</p>
       <div class="contact-links">
-        <a href="mailto:paraspdeshpande@gmail.com" class="contact-link">
+        <a href="#" id="email-link" class="contact-link">
           <i class="fas fa-envelope"></i> Email
         </a>
         <a href="https://www.linkedin.com/in/paras-deshpande-aiengineer/" target="_blank" class="contact-link">
@@ -1193,6 +1434,12 @@
         </a>
         <a href="https://x.com/paraspdeshpande" target="_blank" class="contact-link">
           <i class="fab fa-twitter"></i> Twitter
+        </a>
+        <a href="#" id="whatsapp-link" target="_blank" rel="noopener noreferrer" class="contact-link whatsapp">
+          <svg class="wa-inline" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+            <path fill="#25D366" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          WhatsApp
         </a>
       </div>
 
@@ -1218,6 +1465,12 @@
     </div>
   </section>
 
+  <a class="whatsapp-fab" id="whatsapp-fab" href="#" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+    <svg viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+
   <!-- Photo Expand Overlay -->
   <div class="photo-overlay" id="photo-overlay" onclick="closePhoto()">
     <img src="profile.jpg" alt="Paras Deshpande" />
@@ -1229,6 +1482,19 @@
   </footer>
 
   <script>
+    // Theme
+    function toggleTheme() {
+      const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', next === 'dark' ? '#0c0b0a' : '#f7f6f3');
+    }
+
+    function particleRGB() {
+      return getComputedStyle(document.documentElement).getPropertyValue('--particle').trim() || '159, 18, 57';
+    }
+
     // Mobile nav toggle
     function toggleNav() {
       document.getElementById('navLinks').classList.toggle('active');
@@ -1283,7 +1549,7 @@
         draw() {
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(239, 68, 68, ${this.opacity})`;
+          ctx.fillStyle = `rgba(${particleRGB()}, ${this.opacity * 0.75})`;
           ctx.fill();
         }
       }
@@ -1301,7 +1567,7 @@
               ctx.beginPath();
               ctx.moveTo(particles[i].x, particles[i].y);
               ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.strokeStyle = `rgba(239, 68, 68, ${0.08 * (1 - dist / 150)})`;
+              ctx.strokeStyle = `rgba(${particleRGB()}, ${0.14 * (1 - dist / 150)})`;
               ctx.lineWidth = 0.5;
               ctx.stroke();
             }
@@ -1344,7 +1610,7 @@
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.lineTo(nx, ny);
-          ctx.strokeStyle = 'rgba(239, 68, 68, 0.15)';
+          ctx.strokeStyle = `rgba(${particleRGB()}, 0.28)`;
           ctx.lineWidth = 1;
           ctx.setLineDash([4, 4]);
           ctx.stroke();
@@ -1412,7 +1678,10 @@
       });
     }, { threshold: 0.1 });
 
-    revealElements.forEach(el => observer.observe(el));
+    revealElements.forEach((el, i) => {
+      el.style.transitionDelay = (Math.min(i, 8) * 0.05) + 's';
+      observer.observe(el);
+    });
 
     // Smooth scroll for nav links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -1430,7 +1699,7 @@
     window.addEventListener('scroll', () => {
       const nav = document.querySelector('nav');
       if (window.scrollY > 50) {
-        nav.style.borderBottomColor = 'rgba(239,68,68,0.1)';
+        nav.style.borderBottomColor = 'rgba(159, 18, 57,0.1)';
       } else {
         nav.style.borderBottomColor = 'var(--border)';
       }
@@ -1508,14 +1777,36 @@
       document.addEventListener('scroll', closeTooltip);
     })();
 
-    // Contact form submission
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQek2-qcqZg84V-OXvaeThbWmW7UQu0ifNH0hWliVVJSQSog7lR6ShhCJ8Y_SjVFj0GA/exec";
+    // Contact form — inbox + WhatsApp come from env.js
+    const CONTACT_EMAIL = (window.CONTACT_EMAIL || "").trim();
+    const WHATSAPP_NUMBER = (window.WHATSAPP_NUMBER || "").replace(/\D/g, "");
+
+    (function wireContactChannels() {
+      const emailLink = document.getElementById("email-link");
+      if (emailLink) {
+        if (CONTACT_EMAIL) emailLink.href = "mailto:" + CONTACT_EMAIL;
+        else emailLink.style.display = "none";
+      }
+
+      const link = document.getElementById("whatsapp-link");
+      const fab = document.getElementById("whatsapp-fab");
+      if (!WHATSAPP_NUMBER) {
+        if (link) link.style.display = "none";
+        if (fab) fab.style.display = "none";
+        return;
+      }
+      const url = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent("Hi Paras, I saw your portfolio and would like to connect.");
+      if (link) link.href = url;
+      if (fab) fab.href = url;
+    })();
+    const FORMSUBMIT_URL = "https://formsubmit.co/ajax/" + CONTACT_EMAIL;
 
     function showFormStatus(message, type) {
       const el = document.getElementById('form-status');
       el.textContent = message;
       el.className = `form-status ${type}`;
-      setTimeout(() => { el.style.display = 'none'; el.className = 'form-status'; }, 5000);
+      el.style.display = 'block';
+      setTimeout(() => { el.style.display = 'none'; el.className = 'form-status'; }, 6000);
     }
 
     async function submitContactForm() {
@@ -1533,22 +1824,46 @@
         return;
       }
 
+      if (!CONTACT_EMAIL) {
+        showFormStatus('Form is not configured yet.', 'error');
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Sending...';
 
       try {
-        await fetch(GOOGLE_SCRIPT_URL, {
+        const res = await fetch(FORMSUBMIT_URL, {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message, timestamp: new Date().toISOString() })
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            name,
+            email,
+            message,
+            _subject: 'Portfolio enquiry from ' + name,
+            _replyto: email,
+            _template: 'table',
+            _captcha: 'false'
+          })
         });
-        showFormStatus('Message sent! I\'ll get back to you soon.', 'success');
-        document.getElementById('contact-name').value = '';
-        document.getElementById('contact-email').value = '';
-        document.getElementById('contact-message').value = '';
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && (data.success === true || data.success === 'true')) {
+          showFormStatus('Message sent! I\'ll get back to you soon.', 'success');
+          document.getElementById('contact-name').value = '';
+          document.getElementById('contact-email').value = '';
+          document.getElementById('contact-message').value = '';
+        } else {
+          window.location.href = 'mailto:' + CONTACT_EMAIL
+            + '?subject=' + encodeURIComponent('Portfolio enquiry from ' + name)
+            + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message);
+        }
       } catch (err) {
-        showFormStatus('Something went wrong. Try emailing me directly.', 'error');
+        window.location.href = 'mailto:' + CONTACT_EMAIL
+          + '?subject=' + encodeURIComponent('Portfolio enquiry from ' + name)
+          + '&body=' + encodeURIComponent('Name: ' + name + '\nEmail: ' + email + '\n\n' + message);
       } finally {
         btn.disabled = false;
         btn.textContent = 'Send Message';
