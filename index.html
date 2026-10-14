@@ -1521,41 +1521,34 @@
       btn.textContent = 'Sending…';
 
       try {
-        // FormSubmit AJAX endpoint — sends email directly to CONTACT_EMAIL,
-        // no page redirect, user stays here the whole time.
-        // NOTE: on first submission FormSubmit sends a one-time confirmation
-        // email to your inbox. Click "Confirm" once and all future submissions
-        // go straight through automatically.
-        const res = await fetch('https://formsubmit.co/ajax/' + CONTACT_EMAIL, {
+        // Google Apps Script Web App — logs to Sheet + sends email notification.
+        // Paste your deployed Web App URL in env.js as APPS_SCRIPT_URL.
+        const scriptUrl = (window.APPS_SCRIPT_URL || '').trim();
+        if (!scriptUrl) {
+          showFormStatus('Contact form is not configured yet.', 'error');
+          btn.disabled = false; btn.textContent = 'Send Message'; return;
+        }
+
+        const res = await fetch(scriptUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({
-            name,
-            email,
-            message,
-            _subject:  'Portfolio enquiry from ' + name,
-            _replyto:  email,
-            _template: 'table',
-            _captcha:  'false'
-          })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, message })
         });
 
         const data = await res.json().catch(() => ({}));
 
-        if (res.ok && (data.success === true || data.success === 'true')) {
+        if (data.success) {
           showFormStatus("✓ Message sent! I'll get back to you soon.", 'success');
           nameEl.value    = '';
           emailEl.value   = '';
           messageEl.value = '';
         } else {
-          // FormSubmit returned a non-OK status (e.g. not yet confirmed)
           showFormStatus(
             '⚠ Could not send right now. Please email me directly at ' + CONTACT_EMAIL,
             'error'
           );
         }
       } catch (err) {
-        // Network error — stay on page, show a friendly message
         showFormStatus(
           '⚠ Network error. Please email me directly at ' + CONTACT_EMAIL,
           'error'
