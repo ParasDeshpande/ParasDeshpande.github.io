@@ -1522,22 +1522,22 @@
 
       try {
         // Google Apps Script Web App — logs to Sheet + sends email notification.
-        // Paste your deployed Web App URL in env.js as APPS_SCRIPT_URL.
+        // Uses no-cors + URLSearchParams to avoid Apps Script CORS/preflight block.
         const scriptUrl = (window.APPS_SCRIPT_URL || '').trim();
         if (!scriptUrl) {
           showFormStatus('Contact form is not configured yet.', 'error');
           btn.disabled = false; btn.textContent = 'Send Message'; return;
         }
 
-        const res = await fetch(scriptUrl, {
+        await fetch(scriptUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, message })
+          mode: 'no-cors',
+          body: new URLSearchParams({ name, email, message })
         });
 
-        const data = await res.json().catch(() => ({}));
-
-        if (data.success) {
+        // no-cors returns an opaque response — we can't read it.
+        // Treat reaching this line as success.
+        if (true) {
           showFormStatus("✓ Message sent! I'll get back to you soon.", 'success');
           nameEl.value    = '';
           emailEl.value   = '';
